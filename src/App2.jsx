@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import contactService from './services/contacts'
 
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
@@ -11,18 +11,13 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
 
-  const hook = () => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-      })
-  }
-  
-  useEffect(hook, [])
-  console.log('render', persons.length, 'notes')
+  useEffect(() => {
+    contactService
+      .getAll()
+      .then(initialContacts => {
+        setPersons(initialContacts)
+    })
+  }, [])
 
   const addInfo = (event) => {
     event.preventDefault()
@@ -33,11 +28,15 @@ const App = () => {
       id: persons.length + 1
     }
 
-    const isDuplicate = persons.some(person => person.name === newName)
+    const isDuplicate = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
 
     isDuplicate
-      ? alert(`${newName} is already added to phonebook`)
-      : setPersons(persons.concat(nameObject))
+    ? alert(`${newName} is already added to phonebook`)
+    : contactService
+      .create(nameObject)
+      .then(returnedContact => {
+        setPersons(persons.concat(returnedContact))
+      })
 
     setNewName('')
     setNewNumber('')
