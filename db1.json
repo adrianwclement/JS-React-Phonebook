@@ -21,9 +21,14 @@
       "id": "4"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Adrian Clement",
       "number": "503-521-6938"
+    },
+    {
+      "id": 6,
+      "name": "Ted Hwang",
+      "number": "661-645-3042"
     }
   ]
 }
